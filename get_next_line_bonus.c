@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bepifani <bepifani@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/16 20:38:47 by bepifani          #+#    #+#             */
-/*   Updated: 2021/12/06 13:50:46 by bepifani         ###   ########.fr       */
+/*   Created: 2021/10/24 14:31:58 by bepifani          #+#    #+#             */
+/*   Updated: 2021/10/25 12:34:05 by bepifani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	*ft_calloc(size_t count, size_t size)
 {
@@ -62,7 +62,7 @@ char	*ft_one_str_to_n(char *str)
 		return (NULL);
 	while (str[a] != '\n' && str[a] != '\0')
 		a++;
-	s = ft_calloc(sizeof(char), (a + 2));
+	s = ft_calloc(sizeof(char), (a + 1));
 	if (!s)
 		return (NULL);
 	while (str[b] != '\n' && str[b] != '\0')
@@ -84,7 +84,7 @@ char	*ft_readfile(int fd, char *str)
 	char	*buff;
 	int		simvol;
 
-	buff = ft_calloc(sizeof(char), (BUFFER_SIZE + 1));
+	buff = ft_calloc(sizeof(char), (BUFFER_SIZE));
 	if (!buff)
 		return (NULL);
 	simvol = 1;
@@ -111,28 +111,14 @@ char	*ft_readfile(int fd, char *str)
 char	*get_next_line(int fd)
 {
 	char		*buf1;
-	static char	*buf2;
+	static char	*buf2[10300];
 
-	if (fd < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (BUFFER_SIZE <= 0)
+	buf2[fd] = ft_readfile(fd, buf2[fd]);
+	if (buf2[fd] == NULL)
 		return (NULL);
-	buf2 = ft_readfile(fd, buf2);
-	if (buf2 == NULL)
-		return (NULL);
-	buf1 = ft_one_str_to_n(buf2);
-	buf2 = ft_end_str_from_buff(buf2);
+	buf1 = ft_one_str_to_n(buf2[fd]);
+	buf2[fd] = ft_end_str_from_buff(buf2[fd]);
 	return (buf1);
 }
-
-// int	main(void)
-// {
-// 	char	*line;
-// 	int		fd;
-
-// 	fd = open("test.txt", O_RDONLY);
-// 	while ((line = get_next_line(fd)))
-// 	{
-// 		printf("%s", line);
-// 	}
-// }
